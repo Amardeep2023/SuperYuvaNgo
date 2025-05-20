@@ -28,11 +28,28 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
+
+// List of allowed origins (frontend URLs)
+const allowedOrigins = [
+  'https://super-yuva-ngo.vercel.app', // Production frontend
+  'http://localhost:5173'              // Local development (Vite/React)
+];
+
 app.use(cors({
-  origin: "http://localhost:5173", 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow only your frontend
-  credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'] // Allow cookies and authentication headers
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true, // Enable cookies/auth headers
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // MongoDB Connection

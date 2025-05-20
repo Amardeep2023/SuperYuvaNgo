@@ -4,6 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Cookies from 'js-cookie';
 
+// Base API URL configuration
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://superyuvango.onrender.com/api' 
+  : 'http://localhost:5000/api';
+
 const Reels = () => {
   const [reels, setReels] = useState([]);
   const [selectedReel, setSelectedReel] = useState(null);
@@ -16,7 +21,7 @@ const Reels = () => {
   useEffect(() => {
     const fetchReels = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/reels/');
+        const response = await axios.get(`${API_BASE_URL}/reels/`);
         setReels(response.data);
       } catch (error) {
         console.error('Error fetching reels:', error);
@@ -28,63 +33,63 @@ const Reels = () => {
     checkAdminStatus();
   }, []);
 
-   const checkAdminStatus = () => {
-      const token = localStorage.getItem('token') || Cookies.get('token');
-      setIsAdmin(!!token);
-    };
+  const checkAdminStatus = () => {
+    const token = localStorage.getItem('token') || Cookies.get('token');
+    setIsAdmin(!!token);
+  };
 
-    const handleDelete = async (reelId, e) => {
-      if (e) e.stopPropagation();
-      if (!window.confirm('Are you sure you want to delete this reel?')) return;
-    
-      setLoading(true);
-      setError(null);
-    
-      try {
-        // Get token from either localStorage or Cookies
-        const token = localStorage.getItem('token') || Cookies.get('token');
-        console.log("Token being sent:", token);
-        
-        if (!token) {
-          throw new Error('Authentication required - Please login again');
-        }
-    
-        const response = await axios.delete(
-          `http://localhost:5000/api/reels/${reelId}`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          }
-        );
-    
-        if (response.data.success || response.data.message === 'Reel deleted successfully') {
-          setReels(prev => prev.filter(reel => reel._id !== reelId));
-          alert('Reel deleted successfully!');
-        } else {
-          throw new Error(response.data.error || 'Failed to delete reel');
-        }
-      } catch (error) {
-        console.error('Delete error:', error);
-        let errorMessage = 'Failed to delete reel. Please try again.';
-        
-        if (error.message.includes('Authentication required')) {
-          errorMessage = error.message;
-        } else if (error.response) {
-          if (error.response.status === 401) {
-            errorMessage = 'Session expired - Please login again';
-          } else if (error.response.status === 404) {
-            errorMessage = 'Reel not found';
-          }
-        }
-        
-        setError(errorMessage);
-        alert(errorMessage);
-      } finally {
-        setLoading(false);
+  const handleDelete = async (reelId, e) => {
+    if (e) e.stopPropagation();
+    if (!window.confirm('Are you sure you want to delete this reel?')) return;
+  
+    setLoading(true);
+    setError(null);
+  
+    try {
+      const token = localStorage.getItem('token') || Cookies.get('token');
+      console.log("Token being sent:", token);
+      
+      if (!token) {
+        throw new Error('Authentication required - Please login again');
       }
-    };
+
+      const response = await axios.delete(
+        `${API_BASE_URL}/reels/${reelId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.data.success || response.data.message === 'Reel deleted successfully') {
+        setReels(prev => prev.filter(reel => reel._id !== reelId));
+        alert('Reel deleted successfully!');
+      } else {
+        throw new Error(response.data.error || 'Failed to delete reel');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      let errorMessage = 'Failed to delete reel. Please try again.';
+      
+      if (error.message.includes('Authentication required')) {
+        errorMessage = error.message;
+      } else if (error.response) {
+        if (error.response.status === 401) {
+          errorMessage = 'Session expired - Please login again';
+        } else if (error.response.status === 404) {
+          errorMessage = 'Reel not found';
+        }
+      }
+      
+      setError(errorMessage);
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleReelClick = (reel, index) => {
     setSelectedReel({ ...reel, index });
     videoRefs.current.forEach((ref, i) => {
@@ -93,6 +98,12 @@ const Reels = () => {
   };
 
   const closeFullscreen = () => setSelectedReel(null);
+
+  // Function to get complete video URL
+  const getVideoUrl = (url) => {
+    if (url.startsWith('http')) return url;
+    return `${API_BASE_URL.replace('/api', '')}${url}`;
+  };
 
   return (
     <div className="relative">
@@ -125,7 +136,7 @@ const Reels = () => {
               onClick={() => handleReelClick(reel, index)}
             >
               <video
-                src={reel.videoUrl.startsWith('http') ? reel.videoUrl : `http://localhost:5000${reel.videoUrl}`}
+                src={getVideoUrl(reel.videoUrl)}
                 className="w-full h-full object-cover"
                 muted
                 loop
@@ -170,11 +181,7 @@ const Reels = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <video
-                src={
-                  selectedReel.videoUrl.startsWith('http')
-                    ? selectedReel.videoUrl
-                    : `http://localhost:5000${selectedReel.videoUrl}`
-                }
+                src={getVideoUrl(selectedReel.videoUrl)}
                 className="w-full h-full object-contain"
                 autoPlay
                 controls

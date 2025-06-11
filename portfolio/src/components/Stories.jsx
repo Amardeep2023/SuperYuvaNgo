@@ -3,9 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
 
-const API_BASE_URL = process.env.NODE_ENV === 'production'
-  ? 'https://superyuvango.onrender.com/api'
-  : 'http://localhost:5000/api';
+
 
 const Stories = () => {
   const [stories, setStories] = useState([]);
@@ -32,7 +30,7 @@ const Stories = () => {
 
   const fetchStories = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/stories`);
+      const response = await axios.get('https://superyuvango.onrender.com/api/stories/');
       setStories(response.data);
     } catch (error) {
       throw error;
@@ -49,7 +47,7 @@ const Stories = () => {
     
     try {
       const token = localStorage.getItem('token') || Cookies.get('token');
-      await axios.delete(`http://localhost:5000/api/stories/${storyId}`, {
+      await axios.delete(`https://superyuvango.onrender.com/api/stories/${storyId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

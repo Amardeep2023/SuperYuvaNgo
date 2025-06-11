@@ -26,14 +26,14 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+//app.use(cors());
 
 
 
 // List of allowed origins (frontend URLs)
 const allowedOrigins = [
   'https://super-yuva-ngo.vercel.app',
-  'https://superyuvango.onrender.com', // Production frontend
+                                       // Production frontend
   'http://localhost:5173'              // Local development (Vite/React)
 ];
 

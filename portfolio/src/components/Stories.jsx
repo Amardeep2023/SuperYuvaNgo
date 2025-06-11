@@ -3,6 +3,10 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
 
+const API_BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://superyuvango.onrender.com/api'
+  : 'http://localhost:5000/api';
+
 const Stories = () => {
   const [stories, setStories] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -28,7 +32,7 @@ const Stories = () => {
 
   const fetchStories = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/stories');
+      const response = await axios.get(`${API_BASE_URL}/stories`);
       setStories(response.data);
     } catch (error) {
       throw error;

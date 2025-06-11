@@ -16,7 +16,7 @@ export default function Login() {
     setError(null);
 
     try {
-      const { data } = await axios.post("http://localhost:5000/api/admin/login", {
+      const { data } = await axios.post("https://superyuvango.onrender.com/api/admin/login", {
         email,
         password,
       });

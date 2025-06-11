@@ -32,7 +32,8 @@ app.use(cors());
 
 // List of allowed origins (frontend URLs)
 const allowedOrigins = [
-  'https://super-yuva-ngo.vercel.app', // Production frontend
+  'https://super-yuva-ngo.vercel.app',
+  'https://superyuvango.onrender.com', // Production frontend
   'http://localhost:5173'              // Local development (Vite/React)
 ];
 

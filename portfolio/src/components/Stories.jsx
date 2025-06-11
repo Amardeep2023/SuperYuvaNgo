@@ -109,7 +109,7 @@ const Stories = () => {
             >
               <img
                 className="w-96 h-96 ph:w-full ph:h-auto rounded-lg object-cover shadow-lg"
-                src={`http://localhost:5000/uploads/${story.coverImage}`}
+                src={`https://superyuvango.onrender.com/uploads/${story.coverImage}`}
                 alt={story.title}
                 loading="lazy"
                 onError={(e) => {

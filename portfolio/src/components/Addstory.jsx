@@ -18,7 +18,7 @@ const AddStory = () => {
     formData.append("coverImage", coverImage);
 
     try {
-      await axios.post("http://localhost:5000/api/stories", formData, {
+      await axios.post("https://superyuvango.onrender.com/api/stories", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       

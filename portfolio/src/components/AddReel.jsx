@@ -68,7 +68,7 @@ const AddReel = () => {
         throw new Error('Authentication token not found');
       }
   
-      const response = await axios.post('http://localhost:5000/api/reels', formData, {
+      const response = await axios.post('https://superyuvango.onrender.com/api/reels', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`

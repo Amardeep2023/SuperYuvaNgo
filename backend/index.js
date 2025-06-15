@@ -120,7 +120,7 @@ async function hashPassword(plainPassword) {
   console.log("Hashed Password:", hashedPassword);
 }
 
-hashPassword("qwer");
+hashPassword("Momdad@123");
 
 
 // Story Schema & Model
@@ -398,13 +398,13 @@ app.delete('/api/reels/:id', verifyToken, async (req, res) => {
 
     // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(reelId)) {
-      console.log("❌ Invalid ObjectId");
+      console.log("Invalid ObjectId");
       return res.status(400).json({ success: false, error: 'Invalid reel ID format' });
     }
 
     // Try finding the reel
     const reel = await Reel.findById(reelId);
-    console.log("🎯 Reel from DB:", reel);
+    console.log(" Reel from DB:", reel);
 
     if (!reel) {
       return res.status(404).json({ success: false, error: 'Reel not found' });
@@ -419,7 +419,7 @@ app.delete('/api/reels/:id', verifyToken, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('🔥 Delete error:', error);
+    console.error(' Delete error:', error);
     res.status(500).json({ success: false, error: 'Server error during deletion' });
   }
 });
